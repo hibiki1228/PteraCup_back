@@ -22,6 +22,8 @@ sqlalchemy = "==1.4.41"
 starlette = "==0.20.4"
 typing-extensions = "==4.3.0"
 firebase-admin = "*"
+uvicorn = "*"
+uvloop = "0.17.0"
 
 [dev-packages]
 
