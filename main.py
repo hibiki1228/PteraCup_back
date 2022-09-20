@@ -17,9 +17,29 @@ firebase_admin.initialize_app(cred, {
 
 app = FastAPI()
 
-@app.get("/api/")
-async def hello():
-    return {"msg":"Hello, this is API server"} 
+@app.get("/login/")
+async def login():
+    return
+
+@app.get("/diary/{user_id}")
+async def list():
+    return  
+
+@app.get("/diary/{user_id}/{diary_id}")
+async def select():
+    return 
+
+@app.post("/diary/{user_id}/create")
+async def create():
+    return
+
+@app.post("/diary/{user_id}/{diary_id}/delete")
+async def delete():
+    return
+
+@app.post("/diary/{user_id}/{diary_id}/update")
+async def update():
+    return
 
 
 # @app.get("/api/me")
