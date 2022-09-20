@@ -4,7 +4,6 @@ from fastapi import FastAPI, Depends
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
-# import pyrebase
 # from firebase import firebase
 # firebase = firebase.FirebaseApplication('https://pteracup-default-rtdb.firebaseio.com', None)
 # result = firebase.get('/users', None)
