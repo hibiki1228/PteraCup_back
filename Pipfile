@@ -21,6 +21,7 @@ sniffio = "==1.3.0"
 sqlalchemy = "==1.4.41"
 starlette = "==0.20.4"
 typing-extensions = "==4.3.0"
+firebase-admin = "*"
 
 [dev-packages]
 
