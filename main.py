@@ -1,3 +1,4 @@
+import imp
 from fastapi import FastAPI, Depends
 # from routers.task import get_user
 import firebase_admin
@@ -5,14 +6,24 @@ from firebase_admin import credentials
 from firebase_admin import db
 import pyrebase
 
-cred = credentials.Certificate('./pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
+# cred = credentials.Certificate('./pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
 
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://pteracup-default-rtdb.firebaseio.com',
-    'databaseAuthVariableOverride': {
-        'uid': 'my-service-worker'
-    }
-})
+# firebase_admin.initialize_app(cred, {
+#     'databaseURL': 'https://pteracup-default-rtdb.firebaseio.com',
+#     'databaseAuthVariableOverride': {
+#         'uid': 'my-service-worker'
+#     }
+# })
+
+PRJ_ID = "pteracup"
+API_KEY = "AIzaSyBNqch4NCLa-dLeCUfKnjktXx4SzBLViOM"
+config = {
+  "apiKey": API_KEY,
+  "authDomain": PRJ_ID + ".firebaseapp.com",
+  "databaseURL": "https://" + PRJ_ID + ".firebaseio.com/",
+  "storageBucket": PRJ_ID + ".appspot.com"
+}
+firebase = pyrebase.initialize_app(config)
 
 
 
