@@ -2,19 +2,19 @@ from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session, sessionmaker
 from starlette.requests import Request
 from pydantic import BaseModel
-from db import Todo, engine
+from db import Diary, engine
 
 # DB接続用のセッションクラス インスタンスが作成されると接続する
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Pydanticを用いたAPIに渡されるデータの定義 ValidationやDocumentationの機能が追加される
-class TodoIn(BaseModel):
+class DiaryIn(BaseModel):
     title: str
     done: bool
 
 # 単一のTodoを取得するためのユーティリティ
-def get_todo(db_session: Session, todo_id: int):
-    return db_session.query(Todo).filter(Todo.id == todo_id).first()
+def get_diary(db_session: Session, diary_id: int):
+    return db_session.query(Diary).filter(Diary.id == diary_id).first()
 
 # DB接続のセッションを各エンドポイントの関数に渡す
 def get_db(request: Request):
@@ -24,41 +24,41 @@ def get_db(request: Request):
 app = FastAPI()
 
 # Todoの全取得
-@app.get("/todos/")
-def read_todos(db: Session = Depends(get_db)):
-    todos = db.query(Todo).all()
-    return todos
+@app.get("/diaries/")
+def read_diaries(db: Session = Depends(get_db)):
+    diaries = db.query(Diary).all()
+    return diaries
 
 # 単一のTodoを取得
-@app.get("/todos/{todo_id}")
-def read_todo(todo_id: int, db: Session = Depends(get_db)):
-    todo = get_todo(db, todo_id)
-    return todo
+@app.get("/diaries/{diary_id}")
+def read_diary(diary_id: int, db: Session = Depends(get_db)):
+    diary = get_diary(db, diary_id)
+    return diary
 
 # Todoを登録
-@app.post("/todos/")
-async def create_todo(todo_in: TodoIn,  db: Session = Depends(get_db)):
-    todo = Todo(title=todo_in.title, done=False)
-    db.add(todo)
+@app.post("/diaries/")
+async def create_diary(diary_in: DiaryIn,  db: Session = Depends(get_db)):
+    todo = Diary(title=diary_in.title, done=False)
+    db.add(diary)
     db.commit()
-    todo = get_todo(db, todo.id)
-    return todo
+    todo = get_diary(db, diary.id)
+    return diary
 
 # Todoを更新
-@app.put("/todos/{todo_id}")
-async def update_todo(todo_id: int, todo_in: TodoIn, db: Session = Depends(get_db)):
-    todo = get_todo(db, todo_id)
-    todo.title = todo_in.title
-    todo.done = todo_in.done
+@app.put("/diaries/{diary_id}")
+async def update_diary(diary_id: int, diary_in: DiaryIn, db: Session = Depends(get_db)):
+    diary = get_diary(db, diary_id)
+    diary.title = diary_in.title
+    diary.done = diary_in.done
     db.commit()
-    todo = get_todo(db, todo_id)
-    return todo
+    diary = get_diary(db, diary_id)
+    return diary
 
 # Todoを削除
-@app.delete("/todos/{todo_id}")
-async def delete_todo(todo_id: int, db: Session = Depends(get_db)):
-    todo = get_todo(db, todo_id)
-    db.delete(todo)
+@app.delete("/diaries/{diary_id}")
+async def delete_diary(diary_id: int, db: Session = Depends(get_db)):
+    diary = get_diary(db, diary_id)
+    db.delete(diary)
     db.commit()
 
 # リクエストの度に呼ばれるミドルウェア DB接続用のセッションインスタンスを作成
