@@ -15,7 +15,7 @@ Base = declarative_base()
 class Todo(Base):
     __tablename__ = 'todos'
     id = Column('id', Integer, primary_key = True)
-    user = Column('user', String(50))
+    user = Column('user', String(25))
     body = Column('body', String(200))
 
 # テーブル作成
