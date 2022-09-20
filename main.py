@@ -39,6 +39,7 @@ firebase_admin.initialize_app(cred, {
 diary_ref = db.reference('diary')
 users_ref = db.reference('users')
 
+
 app = FastAPI()
 
 @app.get("/login/")
@@ -47,8 +48,8 @@ async def login():
 
 @app.get("/diary/{user_id}")
 async def list(user_id:str):
-    # data =diary_ref.child(user_id).get('body')
-    result = users_ref.child('user004').get('name')
+    #ユーザーidが一致する日記をすべて持ってくる
+    result = users_ref.child('user004').get()
     return  result
 
 @app.get("/diary/{user_id}/{diary_id}")
@@ -56,8 +57,7 @@ async def select():
     return 
 
 @app.post("/diary/{user_id}/create")
-async def create(user_id:str, body:str):
-    data = {}
+async def create():
     return
 
 @app.post("/diary/{user_id}/{diary_id}/delete")
