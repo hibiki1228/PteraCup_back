@@ -3,6 +3,7 @@ from fastapi import FastAPI, Depends
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
+import pyrebase
 
 cred = credentials.Certificate('./pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
 
@@ -23,6 +24,7 @@ async def login():
 
 @app.get("/diary/{user_id}")
 async def list():
+    
     return  
 
 @app.get("/diary/{user_id}/{diary_id}")
