@@ -73,7 +73,7 @@ from fastapi import Depends, HTTPException, status, Response
 from firebase_admin import auth, credentials
 import firebase_admin
 
-cred = credentials.Certificate('./account_key.json')
+cred = credentials.Certificate('routers/pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
 firebase_admin.initialize_app(cred)
 
 def get_user(res: Response, cred: HTTPAuthorizationCredentials=Depends(HTTPBearer(auto_error=False))):
