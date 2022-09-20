@@ -15,8 +15,8 @@ Base = declarative_base()
 class Todo(Base):
     __tablename__ = 'todos'
     id = Column('id', Integer, primary_key = True)
-    title = Column('title', String(200))
-    done = Column('done', Boolean, default=False)
+    user = Column('user', String(50))
+    body = Column('body', String(200))
 
 # テーブル作成
 Base.metadata.create_all(bind=engine)
