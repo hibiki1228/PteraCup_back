@@ -25,7 +25,7 @@ config = {
 }
 firebase = pyrebase.initialize_app(config)
 
-
+db = firebase.database()
 
 app = FastAPI()
 
@@ -34,9 +34,10 @@ async def login():
     return
 
 @app.get("/diary/{user_id}")
-async def list():
-    
-    return  
+async def list(user_id:str):
+    #ユーザーidが一致する日記をすべて持ってくる
+    data = db.child(user_id).get(user['idToken'])
+    return  data
 
 @app.get("/diary/{user_id}/{diary_id}")
 async def select():
