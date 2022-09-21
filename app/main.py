@@ -41,7 +41,6 @@ async def signup(username:str, email:str, password:str):
         'email': email,
         'password': password
     })
-    # result = users_ref.get()
 
     return cnt
 
@@ -72,14 +71,7 @@ async def list(user_id:int):
             keys.append(key)
             data.append(diary_ref.child(key).get())
 
-    return data    
-    # diaries = diary_ref.get()
-    # user_diaries =[]
-    # user_diary_ids = users_ref.get()["user_diary"]
-    # for id in user_diary_ids:
-    #     user_diaries.append(diaries[id])
-
-    # return user_diaries
+    return data
 
 
 @app.get("/my_diary/{user_id}")
@@ -103,13 +95,15 @@ async def rand_diary():
     for key, val in diaries.items():
         i = random.randint(0,10) % 4
         if i == 0:
-            return diary_ref.child(key).get()
+            data.append(val)
+        
+    return data
     
 
 
 
 @app.get("/diary/create")
-async def create(user_id:int, body:str, title:str, date:str):
+async def create(user_id:int, body:str[256], title:str, date:str):
     cnt = (diary_ref.get().keys())
     result = diary_ref.push({
         'title': title,
