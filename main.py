@@ -5,6 +5,7 @@ from fastapi import FastAPI, Depends
 import requests
 import firebase_admin
 <<<<<<< HEAD
+<<<<<<< HEAD
 from firebase_admin import credentials
 from firebase_admin import db
 
@@ -17,10 +18,16 @@ from pydantic import BaseModel
 # print
 =======
 from pydantic import BaseModel
+=======
+from pydantic import BaseModel
+>>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Depends, HTTPException, status, Response
 from firebase_admin import auth, credentials, db
 import firebase_admin
+<<<<<<< HEAD
+>>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
+=======
 >>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
 
 cred = credentials.Certificate('routers/pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
@@ -107,14 +114,20 @@ async def list(user_id:int):
     for key, val in diaries.items():
         vals.append(val)
 <<<<<<< HEAD
+<<<<<<< HEAD
         
     return  vals[1]['user_id']
 =======
+=======
+>>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
         print(val['user_id'])
         if val['user_id'] == user_id:
             keys.append(key)
 
     return keys
+<<<<<<< HEAD
+>>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
+=======
 >>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
 
 @app.get("/diary/{user_id}/{title}")
@@ -154,6 +167,7 @@ async def create(user_id:int, body:str, title:str, date:str):
 #       'user_id': '4',
 #       'name': 'ahi'
 #     })
+<<<<<<< HEAD
 
 
 <<<<<<< HEAD
@@ -166,5 +180,10 @@ async def search():
     
     return result
 =======
+#     return {"msg": "success!"}
+>>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
+=======
+
+
 #     return {"msg": "success!"}
 >>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
