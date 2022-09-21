@@ -2,7 +2,9 @@ import imp
 from unittest import async_case
 from fastapi import FastAPI, Depends
 # from routers.task import get_user
+import requests
 import firebase_admin
+<<<<<<< HEAD
 from firebase_admin import credentials
 from firebase_admin import db
 
@@ -13,6 +15,13 @@ from pydantic import BaseModel
 # firebase = firebase.FirebaseApplication('https://pteracup-default-rtdb.firebaseio.com', None)
 # result = firebase.get('/users', None)
 # print
+=======
+from pydantic import BaseModel
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Depends, HTTPException, status, Response
+from firebase_admin import auth, credentials, db
+import firebase_admin
+>>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
 
 cred = credentials.Certificate('routers/pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
 
@@ -23,23 +32,35 @@ firebase_admin.initialize_app(cred, {
     }
 })
 
-# PRJ_ID = "pteracup"
-# API_KEY = "AIzaSyBNqch4NCLa-dLeCUfKnjktXx4SzBLViOM"
-# config = {
-#   "apiKey": API_KEY,
-#   "authDomain": PRJ_ID + ".firebaseapp.com",
-#   "databaseURL": "https://" + PRJ_ID + ".firebaseio.com/",
-#   "storageBucket": PRJ_ID + ".appspot.com"
-# }
-# firebase = pyrebase.initialize_app(config)
 
-# db = firebase.database()
+def get_idToken(email:str, password:str):
+    url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBNqch4NCLa-dLeCUfKnjktXx4SzBLViOM"
 
-# ID = "test@example.com"
-# PW = "your password"
+    para = {
+        "email": email,
+        "password": password,
+        "returnSecureToken":true
+    }
 
-# auth = firebase.auth()
-# user = auth.sign_in_with_email_and_password(ID, PW)
+    return requests.post(url, params=para)
+
+def get_user(res: Response, cred: HTTPAuthorizationCredentials=Depends(HTTPBearer(auto_error=False))):
+    if cred is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Bearer authentication required",
+            headers={'WWW-Authenticate': 'Bearer realm="auth_required"'},
+        )
+    try:
+        decoded_token = auth.verify_id_token(cred.credentials)
+    except Exception as err:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid authentication credentials. {err}",
+            headers={'WWW-Authenticate': 'Bearer error="invalid_token"'},
+        )
+    res.headers['WWW-Authenticate'] = 'Bearer realm="auth_required"'
+    return decoded_token
 
 diary_ref = db.reference('diary')
 users_ref = db.reference('users')
@@ -52,6 +73,11 @@ class diary(BaseModel):
     
 app = FastAPI()
 
+@app.get("/api/me")
+async def hello_user(user = Depends(get_user)):
+    return {"msg":"Hello, user","uid":user} 
+
+
 @app.get("/signup")
 async def signup(username:str, email:str, password:str):
     result = users_ref.push({
@@ -60,28 +86,36 @@ async def signup(username:str, email:str, password:str):
         'password': password
     })
     result = users_ref.get()
-
-    for key, val in result.items():
-        if key == "name":
-            if val == username:
-                return 
+    
     return 
 
 @app.get("/login")
-async def login():
-    return
+async def login(email:str, password:str):
+    idToken = get_idToken(email, password)
+    # headers = {'Authorization': 'Bearer {idToken}'}
+    user = Depends(get_user)
+    
+    return idToken # user['uid']
 
 @app.get("/diary/{user_id}")
-async def list(user_id:str):
+async def list(user_id:int):
     #ユーザーidが一致する日記をすべて持ってくる
-    result = users_ref.get()
+    diaries = diary_ref.get()
     keys = []
     vals = []
-    for key, val in result.items():
-        keys.append(key)
+
+    for key, val in diaries.items():
         vals.append(val)
+<<<<<<< HEAD
         
     return  vals[1]['user_id']
+=======
+        print(val['user_id'])
+        if val['user_id'] == user_id:
+            keys.append(key)
+
+    return keys
+>>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
 
 @app.get("/diary/{user_id}/{title}")
 async def select(user_id:str):
@@ -105,28 +139,24 @@ async def create(user_id:int, body:str, title:str, date:str):
     })
     return {'msg': 'success!'}
 
-@app.post("/diary/{user_id}/{diary_id}/delete")
-async def delete():
-    return
+# @app.post("/diary/{user_id}/{diary_id}/delete")
+# async def delete():
+#     return
 
-@app.post("/diary/{user_id}/{diary_id}/update")
-async def update():
-    return
+# @app.post("/diary/{user_id}/{diary_id}/update")
+# async def update():
+#     return
 
-
-# @app.get("/api/me")
-# async def hello_user(user = Depends(get_user)):
-#     return {"msg":"Hello, user","uid":user['uid']} 
-
-@app.get("/api/add")
-async def add():
-    users_ref = db.reference('/users')
-    users_ref.child('user004').set({
-      'user_id': '4',
-      'name': 'ahi'
-    })
+# @app.get("/api/add")
+# async def add():
+#     users_ref = db.reference('/users')
+#     users_ref.child('user004').set({
+#       'user_id': '4',
+#       'name': 'ahi'
+#     })
 
 
+<<<<<<< HEAD
     return {"msg": "success!"}
 
 
@@ -135,3 +165,6 @@ async def search():
     my_func.select()
     
     return result
+=======
+#     return {"msg": "success!"}
+>>>>>>> 361d718807713e6b6ff25e277a833dd2b8f3ae45
