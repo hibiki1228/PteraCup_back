@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c219729e02645a54f7ebec80ca7f106004c344e94d7a86a77bf17bb45316c00e"
+            "sha256": "ea076ed7509e51cb3f4971ab0d1f2b86361991bd5464231ee9faf94d390dcb38"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -549,12 +549,19 @@
             "markers": "python_version >= '3.1'",
             "version": "==3.0.9"
         },
+        "python-firebase": {
+            "hashes": [
+                "sha256:824b45947611325fab0c9c7ce6b15f0f31c387b7873a90664601c7427baede0f"
+            ],
+            "index": "pypi",
+            "version": "==1.2"
+        },
         "requests": {
             "hashes": [
                 "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983",
                 "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"
             ],
-            "markers": "python_version >= '3.7' and python_version < '4'",
+            "index": "pypi",
             "version": "==2.28.1"
         },
         "rsa": {

@@ -24,6 +24,8 @@ typing-extensions = "==4.3.0"
 firebase-admin = "*"
 uvicorn = "*"
 uvloop = "0.17.0"
+requests = "*"
+python-firebase = "*"
 
 [dev-packages]
 
