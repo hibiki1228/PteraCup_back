@@ -1,14 +1,13 @@
 import imp
 from unittest import async_case
-from fastapi import FastAPI, Depends
+
+import firebase_admin
 # from routers.task import get_user
 import requests
-import firebase_admin
-from pydantic import BaseModel
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi import Depends, HTTPException, status, Response
+from fastapi import Depends, FastAPI, HTTPException, Response, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth, credentials, db
-import firebase_admin
+from pydantic import BaseModel
 
 cred = credentials.Certificate('./pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
 
@@ -57,24 +56,25 @@ class diary(BaseModel):
     title: str
     date: str
     diaryText: str
-    
+
 app = FastAPI()
 
 # @app.get("/api/me")
 # async def hello_user(user = Depends(get_user)):
-#     return {"msg":"Hello, user","uid":user} 
+#     return {"msg":"Hello, user","uid":user}
 
 
 @app.get("/signup")
 async def signup(username:str, email:str, password:str):
-    cnt = users_ref.get().values().numChildren()
-    # result = users_ref.push({
-    #     'name': username,
-    #     'email': email,
-    #     'password': password
-    # })
+    cnt = len(users_ref.get().keys())+1
+    result = users_ref.push({
+        'user_id':cnt,
+        'name': username,
+        'email': email,
+        'password': password
+    })
     # result = users_ref.get()
-    
+
     return cnt
 
 @app.get("/login")
@@ -85,7 +85,7 @@ async def login(email:str, password:str):
         if val['email'] == email:
             if val['password'] == password:
                 return val['user_id']
-        
+
     return {'msg', 'error! I cannnot found your account.'} # user['uid']
 
 @app.get("/diary/{user_id}")
@@ -106,9 +106,22 @@ async def list(user_id:int):
 
     return data
 
-@app.get("/diary/{user_id}/{title}")
-async def select():
-    return 
+@app.get("/my_diary/{user_id}")
+async def my_diary_list(user_id:int):
+    my_others_diaries = []
+    diaries = diary_ref.get()
+    user_info = users_ref.get()
+    for  val in user_info.values():
+        if user_id == val.user_id:
+            my_others_diaries=val.others_diary_list
+    vals =[]
+
+    for my_others_diary in my_others_diaries:
+        for val in diaries.values():
+            if my_others_diary == val.id:
+                vals.append(val)
+    return vals
+
 
 @app.get("/diary/create")
 async def create(user_id:int, body:str, title:str, date:str):
