@@ -26,6 +26,7 @@ uvicorn = "*"
 uvloop = "0.17.0"
 requests = "*"
 python-firebase = "*"
+gunicorn = "*"
 
 [dev-packages]
 
