@@ -4,12 +4,13 @@ from fastapi import FastAPI, Depends
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
+import my_func
 # from firebase import firebase
 # firebase = firebase.FirebaseApplication('https://pteracup-default-rtdb.firebaseio.com', None)
 # result = firebase.get('/users', None)
 # print
 
-cred = credentials.Certificate('./pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
+cred = credentials.Certificate('routers/pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://pteracup-default-rtdb.firebaseio.com',
@@ -83,3 +84,10 @@ async def add():
 
 
     return {"msg": "success!"}
+
+
+@app.get("/api/search")
+async def search():
+    my_func.select()
+    
+    return result
