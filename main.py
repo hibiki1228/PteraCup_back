@@ -20,34 +20,34 @@ firebase_admin.initialize_app(cred, {
 })
 
 
-def get_idToken(email:str, password:str):
-    url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBNqch4NCLa-dLeCUfKnjktXx4SzBLViOM"
+# def get_idToken(email:str, password:str):
+#     url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBNqch4NCLa-dLeCUfKnjktXx4SzBLViOM"
 
-    para = {
-        "email": email,
-        "password": password,
-        "returnSecureToken":true
-    }
+#     para = {
+#         "email": email,
+#         "password": password,
+#         "returnSecureToken":true
+#     }
 
-    return requests.post(url, params=para)
+#     return requests.post(url, params=para)
 
-def get_user(res: Response, cred: HTTPAuthorizationCredentials=Depends(HTTPBearer(auto_error=False))):
-    if cred is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Bearer authentication required",
-            headers={'WWW-Authenticate': 'Bearer realm="auth_required"'},
-        )
-    try:
-        decoded_token = auth.verify_id_token(cred.credentials)
-    except Exception as err:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Invalid authentication credentials. {err}",
-            headers={'WWW-Authenticate': 'Bearer error="invalid_token"'},
-        )
-    res.headers['WWW-Authenticate'] = 'Bearer realm="auth_required"'
-    return decoded_token
+# def get_user(res: Response, cred: HTTPAuthorizationCredentials=Depends(HTTPBearer(auto_error=False))):
+#     if cred is None:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             detail="Bearer authentication required",
+#             headers={'WWW-Authenticate': 'Bearer realm="auth_required"'},
+#         )
+#     try:
+#         decoded_token = auth.verify_id_token(cred.credentials)
+#     except Exception as err:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             detail=f"Invalid authentication credentials. {err}",
+#             headers={'WWW-Authenticate': 'Bearer error="invalid_token"'},
+#         )
+#     res.headers['WWW-Authenticate'] = 'Bearer realm="auth_required"'
+#     return decoded_token
 
 diary_ref = db.reference('diary')
 users_ref = db.reference('users')
@@ -60,9 +60,9 @@ class diary(BaseModel):
     
 app = FastAPI()
 
-@app.get("/api/me")
-async def hello_user(user = Depends(get_user)):
-    return {"msg":"Hello, user","uid":user} 
+# @app.get("/api/me")
+# async def hello_user(user = Depends(get_user)):
+#     return {"msg":"Hello, user","uid":user} 
 
 
 @app.get("/signup")
