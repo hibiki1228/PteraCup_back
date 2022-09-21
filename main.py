@@ -67,22 +67,26 @@ app = FastAPI()
 
 @app.get("/signup")
 async def signup(username:str, email:str, password:str):
-    result = users_ref.push({
-        'name': username,
-        'email': email,
-        'password': password
-    })
-    result = users_ref.get()
+    cnt = users_ref.get().values().numChildren()
+    # result = users_ref.push({
+    #     'name': username,
+    #     'email': email,
+    #     'password': password
+    # })
+    # result = users_ref.get()
     
-    return 
+    return cnt
 
 @app.get("/login")
 async def login(email:str, password:str):
-    idToken = get_idToken(email, password)
-    # headers = {'Authorization': 'Bearer {idToken}'}
-    user = Depends(get_user)
-    
-    return idToken # user['uid']
+    users = users_ref.get()
+
+    for key, val in users.items():
+        if val['email'] == email:
+            if val['password'] == password:
+                return val['user_id']
+        
+    return {'msg', 'error! I cannnot found your account.'} # user['uid']
 
 @app.get("/diary/{user_id}")
 async def list(user_id:int):
@@ -98,7 +102,7 @@ async def list(user_id:int):
         print(val['user_id'])
         if val['user_id'] == user_id:
             keys.append(key)
-            data.append(diary_ref.child(key).get)
+            data.append(diary_ref.child(key).get())
 
     return data
 
