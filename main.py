@@ -4,26 +4,13 @@ from fastapi import FastAPI, Depends
 # from routers.task import get_user
 import requests
 import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import db
-
-
-from pydantic import BaseModel
-
-# from firebase import firebase
-# firebase = firebase.FirebaseApplication('https://pteracup-default-rtdb.firebaseio.com', None)
-# result = firebase.get('/users', None)
-# print
-from pydantic import BaseModel
-from pydantic import BaseModel
 from pydantic import BaseModel
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Depends, HTTPException, status, Response
 from firebase_admin import auth, credentials, db
 import firebase_admin
 
-
-cred = credentials.Certificate('routers/pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
+cred = credentials.Certificate('./pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://pteracup-default-rtdb.firebaseio.com',
@@ -86,7 +73,7 @@ async def signup(username:str, email:str, password:str):
         'password': password
     })
     result = users_ref.get()
-
+    
     return 
 
 @app.get("/login")
@@ -106,28 +93,15 @@ async def list(user_id:int):
 
     for key, val in diaries.items():
         vals.append(val)
-
-        
-    return  vals[1]['user_id']
-
         print(val['user_id'])
         if val['user_id'] == user_id:
             keys.append(key)
 
     return keys
 
-
 @app.get("/diary/{user_id}/{title}")
-async def select(user_id:str):
-    if user_id == diary_ref[id]:
-    result = diary_ref.get()
-    keys = []
-    vals = []
-    for key, val in result.items():
-        keys.append(key)
-        vals.append(val)
-    
-    return vals[0]['body']
+async def select():
+    return 
 
 @app.get("/diary/create")
 async def create(user_id:int, body:str, title:str, date:str):
@@ -155,11 +129,5 @@ async def create(user_id:int, body:str, title:str, date:str):
 #       'name': 'ahi'
 #     })
 
-    return {"msg": "success!"}
 
-
-@app.get("/api/search")
-async def search():
-    my_func.select()
-    
-    return result
+#     return {"msg": "success!"}
