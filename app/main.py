@@ -10,7 +10,11 @@ from firebase_admin import auth, credentials, db
 from pydantic import BaseModel
 import random
 
-cred = credentials.Certificate('./pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
+cred = credentials.Certificate({
+    projectId: FIREBASE_PROJECT_ID,
+    clientEmail: GOOGLE_CLIENT_EMAIL,
+    privateKey: GOOGLE_PRIVATE_KEY
+})
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://pteracup-default-rtdb.firebaseio.com',
@@ -19,50 +23,10 @@ firebase_admin.initialize_app(cred, {
     }
 })
 
-
-# def get_idToken(email:str, password:str):
-#     url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBNqch4NCLa-dLeCUfKnjktXx4SzBLViOM"
-
-#     para = {
-#         "email": email,
-#         "password": password,
-#         "returnSecureToken":true
-#     }
-
-#     return requests.post(url, params=para)
-
-# def get_user(res: Response, cred: HTTPAuthorizationCredentials=Depends(HTTPBearer(auto_error=False))):
-#     if cred is None:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Bearer authentication required",
-#             headers={'WWW-Authenticate': 'Bearer realm="auth_required"'},
-#         )
-#     try:
-#         decoded_token = auth.verify_id_token(cred.credentials)
-#     except Exception as err:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail=f"Invalid authentication credentials. {err}",
-#             headers={'WWW-Authenticate': 'Bearer error="invalid_token"'},
-#         )
-#     res.headers['WWW-Authenticate'] = 'Bearer realm="auth_required"'
-#     return decoded_token
-
 diary_ref = db.reference('diary')
 users_ref = db.reference('users')
 
-class diary(BaseModel):
-    author: str
-    title: str
-    date: str
-    diaryText: str
-
 app = FastAPI()
-
-# @app.get("/api/me")
-# async def hello_user(user = Depends(get_user)):
-#     return {"msg":"Hello, user","uid":user}
 
 @app.get("/")
 async def hello():
@@ -122,7 +86,8 @@ async def list(user_id:int):
 async def my_diary_list(user_id:int):
     my_others_diaries = []
     diaries = diary_ref.get()
-    others_diary_ids = users_ref.get()["others_diary_ids"]
+    users = users_ref.get()
+    others_diary_ids = users["others_diary_ids"]
     for id in others_diary_ids:
         my_others_diaries.append(diaries[id])
     return my_others_diaries
@@ -138,7 +103,7 @@ async def rand_diary():
     for key, val in diaries.items():
         i = random.randint(0,10) % 4
         if i == 0:
-            data.append(diary_ref.child(key).get())
+            return diary_ref.child(key).get()
     
 
 
