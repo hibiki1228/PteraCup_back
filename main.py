@@ -106,21 +106,21 @@ async def list(user_id:int):
 
     return data
 
-@app.get("/my_diary/{user_id}")
-async def my_diary_list(user_id:int):
-    my_others_diaries = []
-    diaries = diary_ref.get()
-    user_info = users_ref.get()
-    for  val in user_info.values():
-        if user_id == val.user_id:
-            my_others_diaries=val.others_diary_list
-    vals =[]
+# @app.get("/my_diary/{user_id}")
+# async def my_diary_list(user_id:int):
+#     my_others_diaries = []
+#     diaries = diary_ref.get()
+#     user_info = users_ref.get()
+#     for  val in user_info.values():
+#         if user_id == val['user_id']:
+#             my_others_diaries=val.others_diary_list
+#     vals =[]
 
-    for my_others_diary in my_others_diaries:
-        for val in diaries.values():
-            if my_others_diary == val.id:
-                vals.append(val)
-    return vals
+#     for my_others_diary in my_others_diaries:
+#         for val in diaries.values():
+#             if my_others_diary == val.id:
+#                 vals.append(val)
+#     return vals
 
 
 @app.get("/diary/create")
