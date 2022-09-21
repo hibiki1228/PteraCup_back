@@ -8,6 +8,7 @@ from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth, credentials, db
 from pydantic import BaseModel
+import random
 
 cred = credentials.Certificate('./pteracup-firebase-adminsdk-5r6k8-ed8304a9d2.json')
 
@@ -92,12 +93,26 @@ async def login(email:str, password:str):
 async def list(user_id:int):
     #ユーザーidが一致する日記をすべて持ってくる
     diaries = diary_ref.get()
-    user_diaries =[]
-    user_diary_ids = users_ref.get()["user_diary"]
-    for id in user_diary_ids:
-        user_diaries.append(diaries[id])
+    keys = []
+    vals = []
 
-    return user_diaries
+    data = []
+
+    for key, val in diaries.items():
+        vals.append(val)
+        # print(val['user_id'])
+        if val['user_id'] == user_id:
+            keys.append(key)
+            data.append(diary_ref.child(key).get())
+
+    return data    
+    # diaries = diary_ref.get()
+    # user_diaries =[]
+    # user_diary_ids = users_ref.get()["user_diary"]
+    # for id in user_diary_ids:
+    #     user_diaries.append(diaries[id])
+
+    # return user_diaries
 
 
 @app.get("/my_diary/{user_id}")
@@ -108,6 +123,20 @@ async def my_diary_list(user_id:int):
     for id in others_diary_ids:
         my_others_diaries.append(diaries[id])
     return my_others_diaries
+
+@app.get("/diary/random")
+async def rand_diary():
+    diaries = diary_ref.get()
+    keys = []
+    vals = []
+
+    data = []
+
+    for key, val in diaries.items():
+        i = random.randint(0,10) % 4
+        if i == 0:
+            data.append(diary_ref.child(key).get())
+    
 
 
 
