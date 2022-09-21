@@ -91,13 +91,16 @@ async def list(user_id:int):
     keys = []
     vals = []
 
+    data = []
+
     for key, val in diaries.items():
         vals.append(val)
         print(val['user_id'])
         if val['user_id'] == user_id:
             keys.append(key)
+            data.append(diary_ref.child(key).get)
 
-    return keys
+    return data
 
 @app.get("/diary/{user_id}/{title}")
 async def select():
