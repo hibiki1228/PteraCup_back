@@ -64,6 +64,9 @@ app = FastAPI()
 # async def hello_user(user = Depends(get_user)):
 #     return {"msg":"Hello, user","uid":user}
 
+@app.get("/")
+async def hello():
+    return {'msg':'hello'}
 
 @app.get("/signup")
 async def signup(username:str, email:str, password:str):
