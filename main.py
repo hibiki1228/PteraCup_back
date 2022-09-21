@@ -92,45 +92,37 @@ async def login(email:str, password:str):
 async def list(user_id:int):
     #ユーザーidが一致する日記をすべて持ってくる
     diaries = diary_ref.get()
-    keys = []
-    vals = []
+    user_diaries =[]
+    user_diary_ids = users_ref.get()["user_diary"]
+    for id in user_diary_ids:
+        user_diaries.append(diaries[id])
 
-    data = []
-
-    for key, val in diaries.items():
-        vals.append(val)
-        print(val['user_id'])
-        if val['user_id'] == user_id:
-            keys.append(key)
-            data.append(diary_ref.child(key).get())
-
-    return data
+    return user_diaries
 
 @app.get("/my_diary/{user_id}")
 async def my_diary_list(user_id:int):
     my_others_diaries = []
     diaries = diary_ref.get()
-    user_info = users_ref.get()
-    for  val in user_info.values():
-        if user_id == val.user_id:
-            my_others_diaries=val.others_diary_list
-    vals =[]
-
-    for my_others_diary in my_others_diaries:
-        for val in diaries.values():
-            if my_others_diary == val.id:
-                vals.append(val)
-    return vals
+    others_diary_ids = users_ref.get()["others_diary_ids"]
+    for id in others_diary_ids:
+        my_others_diaries.append(diaries[id])
+    return my_others_diaries
 
 
 @app.get("/diary/create")
 async def create(user_id:int, body:str, title:str, date:str):
+    cnt = (diary_ref.get().keys())
     result = diary_ref.push({
         'title': title,
         'body': body,
         'user_id': user_id,
         'date': date
     })
+    user_diaries=users_ref.get()["my_diary_list"]
+    user_diaries +=f",{diary_ref.get()[diary_ref.get().values()[cnt]]}"
+
+    users_ref.child(user_id).update({"my_diary_list":user_diaries})
+
     return {'msg': 'success!'}
 
 # @app.post("/diary/{user_id}/{diary_id}/delete")
