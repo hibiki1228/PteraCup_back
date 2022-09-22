@@ -1,4 +1,4 @@
-import imp
+import os
 from unittest import async_case
 
 import firebase_admin
@@ -11,9 +11,9 @@ from pydantic import BaseModel
 import random
 
 cred = credentials.Certificate({
-    projectId: FIREBASE_PROJECT_ID,
-    clientEmail: GOOGLE_CLIENT_EMAIL,
-    privateKey: GOOGLE_PRIVATE_KEY
+    "projectId": os.environ('FIREBASE_PROJECT_ID'),
+    "clientEmail": os.environ('GOOGLE_CLIENT_EMAIL'),
+    "privateKey": os.environ('GOOGLE_PRIVATE_KEY')
 })
 
 firebase_admin.initialize_app(cred, {
